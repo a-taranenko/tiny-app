@@ -2,8 +2,12 @@
 <html lang="en">
 <body>
     <!-- Write EJS code here to display shortened links -->
+  <form method="POST" action="/urls/<%= urlInfo %>?_method=PUT">
+    <label>Short URL: <%= urlInfo %></label>
 
-  <p><%= info %></p>
+    <input type="text" name="long URL" value="<%= longUrlInfo %>" size=40></>
+    <button type="submit">Update</button>
+  </form>
 
 </body>
 </html>
