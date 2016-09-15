@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+</head>
+
+<body>
+    <!-- Write EJS code here to display shortened links -->
+  <header><% include partials/_header %></header>
+
+    <ul>
+
+      <% for (var key in urls) { %>
+        <form method="POST" action="/urls/<%= key %>?_method=DELETE">
+        <li><%= key %> - <%= urls[key] %></li>
+        <button type="submit">Delete</button>
+        </form>
+
+        <a href="/urls/<%= key %>">Edit</a>
+      <% } %>
+
+    </ul>
+
+
+</body>
+</html>
