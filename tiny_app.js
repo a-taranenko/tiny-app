@@ -11,10 +11,16 @@ app.use(bodyParser.urlencoded());
 const methodOverride = require("method-override");
 app.use(methodOverride("_method"));
 
-let urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
-};
+//MONGO-DB
+const MongoClient = require("mongodb").MongoClient;
+const MONGODB_URI = "mongodb://127.0.0.1:27017/url_shortener";
+
+//Needs to change
+// let urlDatabase = {
+//   "b2xVn2": "http://www.lighthouselabs.ca",
+//   "9sm5xK": "http://www.google.com"
+// };
+
 
 function generateRandomString() {
   let chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -27,66 +33,118 @@ function generateRandomString() {
   return randomString;
 }
 
-app.get('/urls', function(req, res) {
-  let templateVars = { urls: urlDatabase }; //whatever I a passing (templateVars) becomes urls in .ejs
-  res.render('urls_index', templateVars);
-});
+function getLongURL(db, shortURL, cb) {
+  let query = { "shortURL": shortURL };
+  db.collection("urls").findOne(query, (err, result) => {
+    if (err) {
+      return cb(err);
+    }
+    return cb(null, result.longURL);
+  });
+}
 
-// app.get("/urls/:id", (req, res) => {
-//   let templateVars = { shortURL: req.params.id };
-//   res.render("urls_show", templateVars);
-// });
+app.get('/urls', function(req, res) {
+  MongoClient.connect(MONGODB_URI, (err, db) => {
+    if (err) {
+      throw new Error("Could not connect! Unexpected error.")
+    }
+
+    const urls = db.collection('urls');
+    let collectionOfKeyValues = {};
+
+    urls.find().toArray((err, results) => {
+      for (let i = 0; i < results.length; i++) {
+        collectionOfKeyValues[results[i].shortURL] = results[i].longURL;
+      }
+
+      let templateVars = { urls: collectionOfKeyValues };
+      res.render('urls_index', templateVars);
+    });
+  });
+});
 
 app.get("/urls/new", (req, res) => {
   res.render("urls_new");
 });
 
 app.post("/urls/create", (req, res) => {
-  console.log(req.body);  // debug statement to see POST parameters
+  MongoClient.connect(MONGODB_URI, (err, db) => {
+    if (err) {
+      throw new Error("Could not connect! Unexpected error.")
+    }
 
-  let shortURL = generateRandomString();
+    let shortURL = generateRandomString();
 
-  urlDatabase[shortURL] = req.body["longURL"];
+    db.collection("urls").insert({ "shortURL": shortURL, "longURL": req.body["longURL"] });
 
-  console.log(urlDatabase);
-
-  //res.send(shortURL);         // Respond with 'Ok' (we will replace this)
-
-  res.redirect(shortURL);
+    res.redirect(shortURL);
+  });
 });
 
 app.get("/urls/:id", (req, res) => {
-  let statement = { urlInfo: req.url.substring(6, 12),
-    longUrlInfo: urlDatabase[req.url.substring(6, 12)]};
+  MongoClient.connect(MONGODB_URI, (err, db) => {
+    if (err) {
+      throw new Error("Could not connect! Unexpected error.")
+    }
 
-  res.render("urls_show", statement);
+    let shortURL = req.params.id;
+
+    getLongURL(db, shortURL, (err, longURL) => {
+      let templateVars = { urlInfo: shortURL,
+        longUrlInfo: longURL };
+
+      res.render('urls_show', templateVars);
+    });
+  });
 });
 
 app.put("/urls/:id", (req, res) => {
-  let uniqueURL = req.url.substring(6, 12);
-  //console.log(res.req.body['long URL']);
+  MongoClient.connect(MONGODB_URI, (err, db) => {
+    if (err) {
+      throw new Error("Could not connect! Unexpected error.")
+    }
 
-  urlDatabase[uniqueURL] = res.req.body["long URL"];
+    db.collection("urls").update({ "shortURL": req.url.substring(6, 12)},
+      { "shortURL": req.url.substring(6, 12),
+        "longURL": res.req.body["long URL"]
+    });
 
-  res.redirect("/urls");
+    res.redirect("/urls");
+  });
 });
 
 app.get("/u/:shortURL", (req, res) => {
-  let key = req.url.substring(3, 9);
-  let longURL = urlDatabase[key];
+  MongoClient.connect(MONGODB_URI, (err, db) => {
+    if (err) {
+      throw new Error("Could not connect! Unexpected error.")
+    }
 
-  // console.log(key);
-  // console.log(longURL);
-  res.redirect(longURL);
+    const urls = db.collection('urls');
+
+    urls.find().toArray((err, results) => {
+      if (err) {
+        throw new Error("Could not get collection or convert to an array.")
+      }
+
+      results.forEach((element) => {
+        if (element["shortURL"] === req.url.substring(3, 9)) {
+          res.redirect(element["longURL"]);
+        }
+      });
+    });
+  });
 });
 
 app.delete("/urls/:id", (req, res) => {
-  //Access proper object key and delete that key-value pair
-  let keyToDelete = req.url.substring(6, 12);
-  delete urlDatabase[keyToDelete];
+  MongoClient.connect(MONGODB_URI, (err, db) => {
+    if (err) {
+      throw new Error("Could not connect! Unexpected error.")
+    }
 
-  console.log(urlDatabase);
-  res.redirect("/urls");
+    db.collection("urls").remove({ "shortURL": req.url.substring(6, 12) });
+
+    res.redirect("/urls");
+  });
 });
 
 app.listen(8080);
