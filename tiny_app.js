@@ -96,8 +96,11 @@ app.put("/urls/:id", (req, res) => {
 
 app.get("/u/:shortURL", (req, res) => {
   const longURL = db_url.findOne({ "shortURL": req.params.shortURL }, function(err, result){
+    if (err) {
+      throw new Error("Could not find document requested.");
+    }
+
     res.redirect(result.longURL);
-    console.log(result);
   });
 });
 
