@@ -2,13 +2,13 @@
 
 require('dotenv').config();
 
-let express = require("express");
-let app = express();
-
+const express = require("express");
 const bodyParser = require("body-parser");
 const methodOverride = require("method-override");
 const MongoClient = require("mongodb").MongoClient;
 const MONGODB_URI = process.env.MONGODB_URI;
+
+let app = express();
 
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded());
@@ -66,12 +66,12 @@ app.get("/urls/new", (req, res) => {
   res.render("urls_new");
 });
 
-app.post("/urls/create", (req, res) => {
-  let shortURL = generateRandomString();
+app.post("/urls", (req, res) => {
+  const shortURL = generateRandomString();
 
   db_url.insert({ "shortURL": shortURL, "longURL": req.body["longURL"] });
 
-  res.redirect(shortURL);
+  res.redirect("/urls");
 });
 
 app.get("/urls/:id", (req, res) => {
@@ -86,8 +86,8 @@ app.get("/urls/:id", (req, res) => {
 });
 
 app.put("/urls/:id", (req, res) => {
-  db_url.update({ "shortURL": req.url.substring(6, 12)},
-    { "shortURL": req.url.substring(6, 12),
+  db_url.update({ "shortURL": req.params.id},
+    { "shortURL": req.params.id,
       "longURL": res.req.body["long URL"]
   });
 
@@ -95,21 +95,14 @@ app.put("/urls/:id", (req, res) => {
 });
 
 app.get("/u/:shortURL", (req, res) => {
-  db_url.find().toArray((err, results) => {
-    if (err) {
-      throw new Error("Could not get collection or convert to an array.")
-    }
-
-    results.forEach((element) => {
-      if (element["shortURL"] === req.url.substring(3, 9)) {
-        res.redirect(element["longURL"]);
-      }
-    });
+  const longURL = db_url.findOne({ "shortURL": req.params.shortURL }, function(err, result){
+    res.redirect(result.longURL);
+    console.log(result);
   });
 });
 
 app.delete("/urls/:id", (req, res) => {
-  db_url.remove({ "shortURL": req.url.substring(6, 12) });
+  db_url.remove({ "shortURL": req.params.id });
 
   res.redirect("/urls");
 });
