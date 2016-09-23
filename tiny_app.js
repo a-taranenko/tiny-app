@@ -7,12 +7,14 @@ const bodyParser = require("body-parser");
 const methodOverride = require("method-override");
 const MongoClient = require("mongodb").MongoClient;
 const MONGODB_URI = process.env.MONGODB_URI;
+const cookieParser = require('cookie-parser');
 
 let app = express();
 
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded());
 app.use(methodOverride("_method"));
+app.use(cookieParser());
 
 function generateRandomString() {
   let chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -26,6 +28,7 @@ function generateRandomString() {
 }
 
 let db_url;
+var username;
 
 MongoClient.connect(MONGODB_URI, (err, db) => {
   if (err) {
@@ -57,13 +60,17 @@ app.get("/urls", function(req, res) {
       collectionOfKeyValues[results[i].shortURL] = results[i].longURL;
     }
 
-    let templateVars = { urls: collectionOfKeyValues };
+    let templateVars = { urls: collectionOfKeyValues,
+      username: req.cookies["username"] };
     res.render('urls_index', templateVars);
   });
 });
 
 app.get("/urls/new", (req, res) => {
-  res.render("urls_new");
+  let templateVars = {
+    username: req.cookies["username"]
+  };
+  res.render("urls_new", templateVars);
 });
 
 app.post("/urls", (req, res) => {
@@ -79,7 +86,8 @@ app.get("/urls/:id", (req, res) => {
 
   getLongURL(db_url, shortURL, (err, longURL) => {
     let templateVars = { urlInfo: shortURL,
-      longUrlInfo: longURL };
+      longUrlInfo: longURL,
+      username: req.cookies["username"] };
 
     res.render('urls_show', templateVars);
   });
@@ -108,6 +116,16 @@ app.delete("/urls/:id", (req, res) => {
   db_url.remove({ "shortURL": req.params.id });
 
   res.redirect("/urls");
+});
+
+app.post("/login", (req, res) => {
+  res.cookie("username", req.body.username, { maxAge: 900000, httpOnly: true });
+  res.redirect("/");
+});
+
+app.post("/logout", (req, res) => {
+  res.clearCookie("username");
+  res.redirect("/");
 });
 
 app.listen(8080);
