@@ -1,1 +1,9 @@
 .env
+
+node_modules
+
+mongo_example.js
+
+Procfile
+
+.DS_Store
