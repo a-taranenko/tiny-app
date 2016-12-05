@@ -16,16 +16,11 @@ app.use(bodyParser.urlencoded());
 app.use(methodOverride("_method"));
 app.use(cookieParser());
 
-function generateRandomString() {
-  let chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  let randomString = "";
+// Function that generates a six character string for a new url
+const createNewShortUrl = require("./string_generate");
 
-  for (var i = 0; i < 6; i++) {
-    randomString += chars[Math.floor(Math.random() * chars.length)];
-  }
-
-  return randomString;
-}
+// Function that retrieves the correct long url for a given short url
+const getLongURL = require("./obtain_long_url");
 
 let db_url;
 var username;
@@ -37,16 +32,6 @@ MongoClient.connect(MONGODB_URI, (err, db) => {
 
   db_url = db.collection('urls');
 });
-
-function getLongURL(db, shortURL, cb) {
-  let query = { "shortURL": shortURL };
-  db.findOne(query, (err, result) => {
-    if (err) {
-      return cb(err);
-    }
-    return cb(null, result.longURL);
-  });
-}
 
 app.get("/", (req, res) => {
   res.redirect("/urls/new");
@@ -74,7 +59,7 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.post("/urls", (req, res) => {
-  const shortURL = generateRandomString();
+  const shortURL = createNewShortUrl();
 
   db_url.insert({ "shortURL": shortURL, "longURL": req.body["longURL"] });
 
