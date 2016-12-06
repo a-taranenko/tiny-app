@@ -47,6 +47,7 @@ app.get("/urls", function(req, res) {
 
     let templateVars = { urls: collectionOfKeyValues,
       username: req.cookies["username"] };
+
     res.render('urls_index', templateVars);
   });
 });
@@ -59,11 +60,11 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.post("/urls", (req, res) => {
-  const shortURL = createNewShortUrl();
+  createNewShortUrl(db_url, (shortURL) => {
+    db_url.insert({ "shortURL": shortURL, "longURL": req.body["longURL"] });
 
-  db_url.insert({ "shortURL": shortURL, "longURL": req.body["longURL"] });
-
-  res.redirect("/urls");
+    res.redirect("/urls");
+  });
 });
 
 app.get("/urls/:id", (req, res) => {
@@ -88,8 +89,8 @@ app.put("/urls/:id", (req, res) => {
 });
 
 app.get("/u/:shortURL", (req, res) => {
-  const longURL = db_url.findOne({ "shortURL": req.params.shortURL }, function(err, result){
-    if (err) {
+  db_url.findOne({ "shortURL": req.params.shortURL }, (err, result) => {
+    if (!result) {
       throw new Error("Could not find document requested.");
     }
 
