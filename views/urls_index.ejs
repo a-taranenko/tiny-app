@@ -5,21 +5,21 @@
 </head>
 
 <body>
-    <!-- Write EJS code here to display shortened links -->
   <header><% include partials/_header %></header>
 
-    <ul>
+  <ul>
 
-      <% for (var key in urls) { %>
-        <form method="POST" action="/urls/<%= key %>?_method=DELETE">
-        <li><%= key %> - <%= urls[key] %></li>
-        <button type="submit">Delete</button>
-        </form>
+    <% for (var key in urls) { %>
+      <form method="POST" action="/urls/<%= key %>?_method=DELETE">
+        <li>
+          <%= key %> - <%= urls[key] %>
+          <button type="submit">Delete</button>
+          <a href="/urls/<%= key %>">Edit</a>
+        </li>
+      </form>
+      <br />
+    <% } %>
 
-        <a href="/urls/<%= key %>">Edit</a>
-      <% } %>
-
-    </ul>
-
+  </ul>
 </body>
 </html>

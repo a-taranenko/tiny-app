@@ -1,29 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
 
-</head>
+  </head>
 
-<body>
-  <h1>Random Short URL Generator</h1>
+  <body>
+    <h1>Random Short URL Generator</h1>
 
-  <% if (!username) { %>
+    <% if (!username) { %>
 
-  <h3>Please login below:</h3>
-  <form method="POST" action="/login">
-    <input type="text" name="username"></input>
-    <input type="submit" value="Submit">
-  </form>
+    <h3>Please login below:</h3>
+    <form method="POST" action="/login">
+      <input type="text" name="username"></input>
+      <input type="submit" value="Submit">
+    </form>
 
-  <% } else { %>
+    <% } else { %>
 
-  <p>User: <%= username %></p>
+    <p>User: <%= username %></p>
 
-  <form method="POST" action="/logout">
-    <input type="submit" value="Logout">
-  </form>
+    <form method="POST" action="/logout">
+      <input type="submit" value="Logout">
+    </form>
 
-  <% } %>
+    <% } %>
 
-</body>
+  </body>
 </html>

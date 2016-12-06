@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-<body>
-  <header><% include partials/_header %></header>
+  <body>
+    <header><% include partials/_header %></header>
 
-    <!-- Write EJS code here to display shortened links -->
-  <form method="POST" action="/urls/<%= urlInfo %>?_method=PUT">
-    <label>Short URL: <%= urlInfo %></label>
+    <form method="POST" action="/urls/<%= urlInfo %>?_method=PUT">
+      <label>Short URL: <%= urlInfo %></label>
 
-    <input type="text" name="long URL" value="<%= longUrlInfo %>" size=40></>
-    <button type="submit">Update</button>
-  </form>
+      <input type="text" name="long URL" value="<%= longUrlInfo %>" size=40></>
+      <button type="submit">Update</button>
+    </form>
 
-</body>
+  </body>
 </html>
