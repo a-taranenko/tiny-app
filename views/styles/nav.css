@@ -1,3 +1,7 @@
+body {
+  font-family: Ubuntu, arial;
+}
+
 header.page-header {
   position: fixed;
   z-index: 50;
@@ -9,10 +13,6 @@ header.page-header {
   margin: 0px;
   padding: 15px 0px 15px 0px;
 
-}
-
-.app-title, .nav-wrapper {
-  font-family: Ubuntu, arial;
 }
 
 .main-page, .create-url, .navigation {
@@ -63,4 +63,9 @@ input.submit-button {
   overflow: auto;
   padding: 5px 0px 5px 0px;
   background-color: white;
+}
+
+div.wrapper {
+  background-color: beige;
+  overflow: auto;
 }

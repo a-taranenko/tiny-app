@@ -1,13 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-  <body>
+<head></head>
+
+<body>
+  <div class="wrapper">
     <header><% include partials/_header %></header>
 
-    <form method="POST" action="/urls/<%= urlInfo %>?_method=PUT">
-      <label>Short URL: <%= urlInfo %></label>
+    <div class="update-url-form">
+      <form method="POST" action="/urls/<%= urlInfo %>?_method=PUT">
+        <label>Short URL: <%= urlInfo %></label>
 
-      <input type="text" name="long URL" value="<%= longUrlInfo %>" size=40></>
-      <button type="submit">Update</button>
-    </form>
-  </body>
+        <input type="text" name="long URL" value="<%= longUrlInfo %>" size=40></>
+        <button type="submit">Update</button>
+      </form>
+    </div>
+  </div>
+</body>
 </html>

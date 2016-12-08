@@ -21,7 +21,3 @@ a.edit-link, button.delete-button {
   color: darkblue;
   cursor: pointer;
 }
-
-div.index-wrapper {
-  background-color:beige;overflow: auto;
-}
