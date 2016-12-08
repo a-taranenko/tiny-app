@@ -1,0 +1,27 @@
+body {
+  width: 500px;
+  margin: auto;
+}
+
+header {
+  float: left;
+  width: 500px;
+}
+
+.url-list {
+  float: left;
+  margin-top: 100px;
+  padding-left: 20px;
+  position: relative;
+  z-index: 10;
+}
+
+a.edit-link, button.delete-button {
+  text-decoration: none;
+  color: darkblue;
+  cursor: pointer;
+}
+
+div.index-wrapper {
+  background-color:beige;overflow: auto;
+}

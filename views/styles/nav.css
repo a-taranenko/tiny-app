@@ -1,0 +1,66 @@
+header.page-header {
+  position: fixed;
+  z-index: 50;
+}
+
+.app-title {
+  text-align: center;
+  background-color: beige;
+  margin: 0px;
+  padding: 15px 0px 15px 0px;
+
+}
+
+.app-title, .nav-wrapper {
+  font-family: Ubuntu, arial;
+}
+
+.main-page, .create-url, .navigation {
+  float: left;
+  padding: 0px;
+  margin: 0px;
+  text-transform: uppercase;
+}
+
+.main-page, .create-url {
+  margin: 0px 10px 0px 10px;
+  padding-top: 1px;
+}
+
+a.nav-link {
+  text-decoration: none;
+  color: darkblue;
+}
+
+a.nav-link:hover {
+  color: orange;
+}
+
+.user {
+  float: right;
+  margin-right: 10px;
+}
+
+input.user-login {
+  height: 16px;
+  border: 1px solid lightgray;
+}
+
+input.submit-button {
+  color: orange;
+  border: 1px solid lightgray;
+  border-left: none;
+  background-color: white;
+  cursor: pointer;
+  font-family: Ubuntu, arial;
+  padding: 3px 5px 3px 5px;
+  height: 20px;
+}
+
+.nav-wrapper {
+  border-bottom: 1px solid black;
+  border-top: 1px solid black;
+  overflow: auto;
+  padding: 5px 0px 5px 0px;
+  background-color: white;
+}

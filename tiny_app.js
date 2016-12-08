@@ -15,6 +15,7 @@ app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded());
 app.use(methodOverride("_method"));
 app.use(cookieParser());
+app.use(express.static("views"));
 
 // Function that generates a six character string for a new url
 const createNewShortUrl = require("./string_generate");

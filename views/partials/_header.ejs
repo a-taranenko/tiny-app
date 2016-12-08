@@ -1,29 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <title>TinyApp</title>
 
+    <!-- App title and navigation styling -->
+    <link rel="stylesheet" type="text/css" href="/styles/nav.css">
+
+    <!-- Short URL and long URL list styling  -->
+    <link rel="stylesheet" type="text/css" href="/styles/index.css">
+
+    <!-- New short URL form styling -->
+    <link rel="stylesheet" type="text/css" href="/styles/new.css">
+
+    <!-- Short URL edit form styling -->
+    <link rel="stylesheet" type="text/css" href="/styles/show.css">
+
+    <!-- Adding google fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu:400,400i,700,700i" rel="stylesheet">
   </head>
 
   <body>
-    <h1>Random Short URL Generator</h1>
+    <h1 class="app-title">TinyApp: Short URL Generator</h1>
 
-    <% if (!username) { %>
+    <nav class="nav-wrapper">
+      <div class="navigation">
+        <p class="main-page"><a href="/urls" class="nav-link">Main</a></p>
+        <p class="create-url"><a href="/urls/new" class="nav-link">Create</a></p>
+      </div>
 
-    <h3>Please login below:</h3>
-    <form method="POST" action="/login">
-      <input type="text" name="username"></input>
-      <input type="submit" value="Submit">
-    </form>
-
-    <% } else { %>
-
-    <p>User: <%= username %></p>
-
-    <form method="POST" action="/logout">
-      <input type="submit" value="Logout">
-    </form>
-
-    <% } %>
-
+      <div class="user">
+        <% if (!username) { %>
+          <form method="POST" action="/login">
+            <label>User login:
+              <input type="text" name="username" class="user-login"><input type="submit" value="Submit" class="submit-button">
+            </label>
+          </form>
+        <% } else { %>
+          <form method="POST" action="/logout">
+            <label>Logged in as: <%= username %>
+              <input type="submit" value="Logout">
+            </label>
+          </form>
+        <% } %>
+      </div>
+    </nav>
   </body>
 </html>
